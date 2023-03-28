@@ -20,22 +20,24 @@ int handle_write_char(char c, char buffer[],
 
 	UNUSED(precision);
 	UNUSED(size);
-
+	/* Set the padding character to '0' if the F_ZERO flag is set */
 	if (flags & F_ZERO)
 		padd = '0';
-
+	/* Add the character to the buffer */
 	buffer[i++] = c;
 	buffer[i] = '\0';
-
+	/* If width is greater than 1, add padding to the right of the character */
 	if (width > 1)
 	{
+		/* Ensure the buffer is null-terminated before padding */
 		buffer[BUFF_SIZE - 1] = '\0';
-		for (i = 0; i < width - 1; i++)
+		for (i = 0; i < width - 1; i++) /* Add padding to the buffer */
 			buffer[BUFF_SIZE - i - 2] = padd;
-
+		/* If the F_MINUS flag is set, write the character and padding in order */
 		if (flags & F_MINUS)
 			return (write(1, &buffer[0], 1) +
 					write(1, &buffer[BUFF_SIZE - i - 1], width - 1));
+		/* If F_MINUS flag is not set, write padding and character in order */
 		else
 			return (write(1, &buffer[BUFF_SIZE - i - 1], width - 1) +
 					write(1, &buffer[0], 1));
