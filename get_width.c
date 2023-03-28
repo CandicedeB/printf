@@ -10,21 +10,21 @@
  */
 int get_width(const char *format, int *i, va_list list)
 {
-	int curr_i;
+	int curr;
 	int width = 0;
 	/* Loop through characters in format string, start from the index. */
-	for (curr_i = *i + 1; format[curr_i] != '\0'; curr_i++)
+	for (curr = *i + 1; format[curr] != '\0'; curr++)
 	{
 		/* If current character is digit, then update width accordingly. */
-		if (is_digit(format[curr_i]))
+		if (is_digit(format[curr]))
 		{
 			width *= 10;
-			width += format[curr_i] - '0';
+			width += format[curr] - '0';
 		}
 		/* If current character is '*', get width from va_list and exit */
-		else if (format[curr_i] == '*')
+		else if (format[curr] == '*')
 		{
-			curr_i++;
+			curr++;
 			width = va_arg(list, int);
 			break;
 		}
@@ -33,7 +33,7 @@ int get_width(const char *format, int *i, va_list list)
 			break;
 	}
 	/* Update the index pointer to the last character processed. */
-	*i = curr_i - 1;
+	*i = curr - 1;
 
 	return (width);
 }
