@@ -38,8 +38,6 @@ int get_precision(const char *format, int *i, va_list list)
 		/* If the current character is not a digit or an asterisk, exit the loop */
 		else
 			break;
-		if (precision < 0)
-			precision = -1;
 	}
 	/* Update the current index of the format string and return the precision */
 	*i = curr - 1;
