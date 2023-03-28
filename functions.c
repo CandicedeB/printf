@@ -34,7 +34,6 @@ int print_string(va_list types, char buffer[],
 	int len = 0, i;
 	char *str = va_arg(types, char *);
 
-	/* unused variables */
 	UNUSED(buffer);
 	UNUSED(flags);
 	UNUSED(width);
@@ -46,8 +45,7 @@ int print_string(va_list types, char buffer[],
 		str = "(null)";
 		if (precision >= 6)
 			str = "      ";
-	}
-	/* get the length of the string */
+	} /* get the length of the string */
 	while (str[len] != '\0')
 		len++;
 	/* if precision is specified, limit the length of the string */
@@ -55,17 +53,14 @@ int print_string(va_list types, char buffer[],
 		len = precision;
 	/* if the width is greater than the length of the string, add padding */
 	if (width > len)
-	{
-		/* if the minus flag is set, left-align the string */
+	{ 	/* if the minus flag is set, left-align the string */
 		if (flags & F_MINUS)
-		{
-			/* write the string */
+		{ /* write the string */
 			write(1, &str[0], len);
 			for (i = width - len; i > 0; i--)
 				write(1, " ", 1); /* adds padding on the right */
 			return (width);
-		}
-		/* right-align the string */
+		} /* right-align the string */
 		else
 		{
 			for (i = width - len; i > 0; i--)
@@ -74,7 +69,6 @@ int print_string(va_list types, char buffer[],
 			return (width);
 		}
 	}
-
 	return (write(1, str, len));
 }
 /**
