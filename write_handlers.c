@@ -15,31 +15,31 @@
 int handle_write_char(char c, char buffer[],
 	int flags, int width, int precision, int size)
 { /* char is stored at left and paddind at buffer's right */
-	int i = 0;
-	char padd = ' ';
+	int j = 0;
+	char pad = ' ';
 
 	UNUSED(precision);
 	UNUSED(size);
 	/* Set the padding character to '0' if the F_ZERO flag is set */
 	if (flags & F_ZERO)
-		padd = '0';
+		pad = '0';
 	/* Add the character to the buffer */
-	buffer[i++] = c;
-	buffer[i] = '\0';
+	buffer[j++] = c;
+	buffer[j] = '\0';
 	/* If width is greater than 1, add padding to the right of the character */
 	if (width > 1)
 	{
 		/* Ensure the buffer is null-terminated before padding */
 		buffer[BUFF_SIZE - 1] = '\0';
-		for (i = 0; i < width - 1; i++) /* Add padding to the buffer */
-			buffer[BUFF_SIZE - i - 2] = padd;
+		for (j = 0; j < width - 1; j++) /* Add padding to the buffer */
+			buffer[BUFF_SIZE - j - 2] = pad;
 		/* If the F_MINUS flag is set, write the character and padding in order */
 		if (flags & F_MINUS)
 			return (write(1, &buffer[0], 1) +
-					write(1, &buffer[BUFF_SIZE - i - 1], width - 1));
+					write(1, &buffer[BUFF_SIZE - j - 1], width - 1));
 		/* If F_MINUS flag is not set, write padding and character in order */
 		else
-			return (write(1, &buffer[BUFF_SIZE - i - 1], width - 1) +
+			return (write(1, &buffer[BUFF_SIZE - j - 1], width - 1) +
 					write(1, &buffer[0], 1));
 	}
 
@@ -63,12 +63,12 @@ int write_number(int is_negative, int ind, char buffer[],
 	int flags, int width, int precision, int size)
 {
 	int length = BUFF_SIZE - ind - 1;
-	char padd = ' ', extra_ch = 0;
+	char pad = ' ', extra_ch = 0;
 
 	UNUSED(size);
 
 	if ((flags & F_ZERO) && !(flags & F_MINUS))
-		padd = '0';
+		pad = '0';
 	if (is_negative)
 		extra_ch = '-';
 	else if (flags & F_PLUS)
@@ -77,7 +77,7 @@ int write_number(int is_negative, int ind, char buffer[],
 		extra_ch = ' ';
 
 	return (write_num(ind, buffer, flags, width, precision,
-		length, padd, extra_ch));
+		length, pad, extra_ch));
 }
 
 /**
@@ -97,7 +97,7 @@ int write_num(int ind, char buffer[],
 	int flags, int width, int prec,
 	int length, char padd, char extra_c)
 {
-	int i, padd_start = 1;
+	int j, padd_start = 1;
 
 	if (prec == 0 && ind == BUFF_SIZE - 2 && buffer[ind] == '0' && width == 0)
 		return (0); /* printf(".0d", 0)  no char is printed */
@@ -111,10 +111,10 @@ int write_num(int ind, char buffer[],
 		length++;
 	if (width > length)
 	{
-		for (i = 1; i < width - length + 1; i++)
-			buffer[i] = padd;
-		buffer[i] = '\0';
-		if (flags & F_MINUS && padd == ' ')/* Asign extra char to left of buffer */
+		for (j = 1; j < width - length + 1; j++)
+			buffer[j] = padd;
+		buffer[j] = '\0';
+		if (flags & F_MINUS && pad == ' ')/* Asign extra char to left of buffer */
 		{
 			if (extra_c)
 				buffer[--ind] = extra_c;
@@ -124,9 +124,9 @@ int write_num(int ind, char buffer[],
 		{
 			if (extra_c)
 				buffer[--ind] = extra_c;
-			return (write(1, &buffer[1], i - 1) + write(1, &buffer[ind], length));
+			return (write(1, &buffer[1], j - 1) + write(1, &buffer[ind], length));
 		}
-		else if (!(flags & F_MINUS) && padd == '0')/* extra char to left of padd */
+		else if (!(flags & F_MINUS) && pad == '0')/* extra char to left of padd */
 		{
 			if (extra_c)
 				buffer[--padd_start] = extra_c;
@@ -157,7 +157,7 @@ int write_unsgnd(int is_negative, int ind,
 {
 	/* The number is stored at the bufer's right and starts at position i */
 	int length = BUFF_SIZE - ind - 1, i = 0;
-	char padd = ' ';
+	char pad = ' ';
 
 	UNUSED(is_negative);
 	UNUSED(size);
@@ -166,7 +166,7 @@ int write_unsgnd(int is_negative, int ind,
 		return (0); /* printf(".0d", 0)  no char is printed */
 
 	if (precision > 0 && precision < length)
-		padd = ' ';
+		pad = ' ';
 
 	while (precision > length)
 	{
@@ -175,7 +175,7 @@ int write_unsgnd(int is_negative, int ind,
 	}
 
 	if ((flags & F_ZERO) && !(flags & F_MINUS))
-		padd = '0';
+		pad = '0';
 
 	if (width > length)
 	{
