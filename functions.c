@@ -53,7 +53,7 @@ int print_string(va_list types, char buffer[],
 		len = precision;
 	/* if the width is greater than the length of the string, add padding */
 	if (width > len)
-	{ 	/* if the minus flag is set, left-align the string */
+	{/* if the minus flag is set, left-align the string */
 		if (flags & F_MINUS)
 		{ /* write the string */
 			write(1, &str[0], len);
