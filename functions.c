@@ -1,7 +1,5 @@
 #include "main.h"
 
-/************************* PRINT CHAR *************************/
-
 /**
  * print_char - Prints a char
  * @types: List a of arguments
@@ -15,11 +13,11 @@
 int print_char(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	char c = va_arg(types, int);
-
-	return (handle_write_char(c, buffer, flags, width, precision, size));
+	/* extract the character argument from the va_list */
+	char args = va_arg(types, int);
+	/* call handle_write_char() to write the character to the buffer */
+	return (handle_write_char(args, buffer, flags, width, precision, size));
 }
-/************************* PRINT A STRING *************************/
 /**
  * print_string - Prints a string
  * @types: List a of arguments
@@ -33,48 +31,52 @@ int print_char(va_list types, char buffer[],
 int print_string(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	int length = 0, i;
+	int len = 0, i;
 	char *str = va_arg(types, char *);
 
+	/* unused variables */
 	UNUSED(buffer);
 	UNUSED(flags);
 	UNUSED(width);
 	UNUSED(precision);
 	UNUSED(size);
+	/* if the string is null, set it to "(null)" */
 	if (str == NULL)
 	{
 		str = "(null)";
 		if (precision >= 6)
 			str = "      ";
 	}
-
-	while (str[length] != '\0')
-		length++;
-
-	if (precision >= 0 && precision < length)
-		length = precision;
-
-	if (width > length)
+	/* get the length of the string */
+	while (str[len] != '\0')
+		len++;
+	/* if precision is specified, limit the length of the string */
+	if (precision >= 0 && precision < len)
+		len = precision;
+	/* if the width is greater than the length of the string, add padding */
+	if (width > len)
 	{
+		/* if the minus flag is set, left-align the string */
 		if (flags & F_MINUS)
 		{
-			write(1, &str[0], length);
-			for (i = width - length; i > 0; i--)
-				write(1, " ", 1);
+			/* write the string */
+			write(1, &str[0], len);
+			for (i = width - len; i > 0; i--)
+				write(1, " ", 1); /* adds padding on the right */
 			return (width);
 		}
+		/* right-align the string */
 		else
 		{
-			for (i = width - length; i > 0; i--)
-				write(1, " ", 1);
-			write(1, &str[0], length);
+			for (i = width - len; i > 0; i--)
+				write(1, " ", 1); /* add padding on the left */
+			write(1, &str[0], len);
 			return (width);
 		}
 	}
 
-	return (write(1, str, length));
+	return (write(1, str, len));
 }
-/************************* PRINT PERCENT SIGN *************************/
 /**
  * print_percent - Prints a percent sign
  * @types: Lista of arguments
@@ -88,6 +90,7 @@ int print_string(va_list types, char buffer[],
 int print_percent(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
+	/* UNUSED() macro is used to suppress warnings about unused parameters. */
 	UNUSED(types);
 	UNUSED(buffer);
 	UNUSED(flags);
@@ -112,24 +115,24 @@ int print_int(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
 	int i = BUFF_SIZE - 2;
-	int is_negative = 0;
+	int is_neg = 0;
 	long int n = va_arg(types, long int);
 	unsigned long int num;
-
+	/* Convert the input number to the appropriate size */
 	n = convert_size_number(n, size);
-
+	/* If the number is zero, add a '0' character to the buffer. */
 	if (n == 0)
 		buffer[i--] = '0';
-
+	/* Set the last character of the buffer to a null terminator. */
 	buffer[BUFF_SIZE - 1] = '\0';
 	num = (unsigned long int)n;
 
 	if (n < 0)
 	{
 		num = (unsigned long int)((-1) * n);
-		is_negative = 1;
+		is_neg = 1;
 	}
-
+	/* Add the digits of the number to the buffer in reverse order. */
 	while (num > 0)
 	{
 		buffer[i--] = (num % 10) + '0';
@@ -138,7 +141,7 @@ int print_int(va_list types, char buffer[],
 
 	i++;
 
-	return (write_number(is_negative, i, buffer, flags, width, precision, size));
+	return (write_number(is_neg, i, buffer, flags, width, precision, size));
 }
 
 /************************* PRINT BINARY *************************/
@@ -155,7 +158,7 @@ int print_int(va_list types, char buffer[],
 int print_binary(va_list types, char buffer[],
 	int flags, int width, int precision, int size)
 {
-	unsigned int n, m, i, sum;
+	unsigned int n, j, i, add;
 	unsigned int a[32];
 	int count;
 
@@ -166,17 +169,17 @@ int print_binary(va_list types, char buffer[],
 	UNUSED(size);
 
 	n = va_arg(types, unsigned int);
-	m = 2147483648; /* (2 ^ 31) */
-	a[0] = n / m;
+	j = 2147483648; /* (2 ^ 31) */
+	a[0] = n / j;
 	for (i = 1; i < 32; i++)
 	{
-		m /= 2;
-		a[i] = (n / m) % 2;
+		j /= 2;
+		a[i] = (n / j) % 2;
 	}
-	for (i = 0, sum = 0, count = 0; i < 32; i++)
+	for (i = 0, add = 0, count = 0; i < 32; i++)
 	{
-		sum += a[i];
-		if (sum || i == 31)
+		add += a[i];
+		if (add || i == 31)
 		{
 			char z = '0' + a[i];
 
