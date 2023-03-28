@@ -24,7 +24,7 @@ int is_printable(char c)
  */
 int append_hexa_code(char ascii_code, char buffer[], int i)
 {
-	char map_to[] = "0123456789ABCDEF";
+	char map[] = "0123456789ABCDEF";
 	/* If ascii_code is negative, make it positive */
 	if (ascii_code < 0)
 		ascii_code *= -1;
@@ -32,9 +32,9 @@ int append_hexa_code(char ascii_code, char buffer[], int i)
 	buffer[i++] = '\\';
 	buffer[i++] = 'x';
 	/* Get the first hexadecimal digit of ascii_code and add it to the buffer */
-	buffer[i++] = map_to[ascii_code / 16];
+	buffer[i++] = map[ascii_code / 16];
 	/* Get the second hexadecimal digit of ascii_code and add it to the buffer */
-	buffer[i] = map_to[ascii_code % 16];
+	buffer[i] = map[ascii_code % 16];
 
 	return (3);
 }
