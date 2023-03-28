@@ -23,7 +23,7 @@ int print_unsigned(va_list types, char buffer[],
 	/* Add a null terminator to the end of the buffer */
 	buffer[BUFF_SIZE - 1] = '\0';
 	/* Loop through digits, and add to the buffer */
-	while (num > 0)
+	while (num1 > 0)
 	{
 		buffer[j--] = (num1 % 10) + '0';
 		num1 /= 10;
