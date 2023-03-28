@@ -15,7 +15,7 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 	int flags, int width, int precision, int size)
 
 {
-	int i, unknow_len = 0, printed_chars = -1;
+	int j, unknow_len = 0, printed_chars = -1;
 	/* Define an array of format types and their respective functions */
 	fmt_t fmt_types[] = {
 		{'c', print_char}, {'s', print_string}, {'%', print_percent},
@@ -25,12 +25,12 @@ int handle_print(const char *fmt, int *ind, va_list list, char buffer[],
 		{'r', print_reverse}, {'R', print_rot13string}, {'\0', NULL}
 	};
 	/* Loop through each format type to find a matching one */
-	for (i = 0; fmt_types[i].fmt != '\0'; i++)
-		if (fmt[*ind] == fmt_types[i].fmt)
+	for (j = 0; fmt_types[j].fmt != '\0'; j++)
+		if (fmt[*ind] == fmt_types[j].fmt)
 			/* If found, call corresponding print function and return its result */
-			return (fmt_types[i].fn(list, buffer, flags, width, precision, size));
+			return (fmt_types[j].fn(list, buffer, flags, width, precision, size));
 	/* If no matching format type is found, handle unknown formats */
-	if (fmt_types[i].fmt == '\0')
+	if (fmt_types[j].fmt == '\0')
 	{
 		if (fmt[*ind] == '\0')
 			return (-1);
